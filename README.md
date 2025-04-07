@@ -10,3 +10,9 @@ Command:
   2. docker run -t -p localport:VRMport "image name"
   3. docker container ls
   4. docker stop "container name"
+
+
+Ignore Files:
+.gitignore
+.dockerignore
+(metion node_modules in it)
