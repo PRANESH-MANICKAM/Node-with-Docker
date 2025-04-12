@@ -35,22 +35,6 @@ pipeline {
         }
     }
 }
-
-        stage('Deploy on EC2') {
-            steps {
-                script {
-                    sshagent(credentials: ["${SSH_KEY_ID}"]) {
-                        bat """
-                    ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} ^
-                        docker pull ${DOCKERHUB_USERNAME}/${IMAGE_NAME}:${IMAGE_TAG} && ^
-                        docker stop ${IMAGE_NAME} || true && ^
-                        docker rm ${IMAGE_NAME} || true && ^
-                        docker run -d --name ${IMAGE_NAME} -p 3000:3000 ${DOCKERHUB_USERNAME}/${IMAGE_NAME}:${IMAGE_TAG}
-                """
-                    }
-                }
-            }
-        }
     }
 
     post {
