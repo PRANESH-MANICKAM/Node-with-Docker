@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKERHUB_USERNAME = 'praneshmanickam'
-        IMAGE_NAME = 'nodeDockerApp'
+        IMAGE_NAME = 'nodedockerapp'
         IMAGE_TAG = 'latest'
         SSH_KEY_ID = 'aws-ec2-ssh-key'
         EC2_USER = 'ubuntu'
