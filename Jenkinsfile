@@ -46,7 +46,7 @@ pipeline {
             docker pull ${DOCKERHUB_USERNAME}/${IMAGE_NAME}:${IMAGE_TAG} &&
             docker stop ${IMAGE_NAME} || true &&
             docker rm ${IMAGE_NAME} || true &&
-            docker run -d --name ${IMAGE_NAME} -p 3000:3000 ${DOCKERHUB_USERNAME}/${IMAGE_NAME}:${IMAGE_TAG}
+            docker run -d --name ${IMAGE_NAME} -p 9000:9000 ${DOCKERHUB_USERNAME}/${IMAGE_NAME}:${IMAGE_TAG}
         '
     """
 }
