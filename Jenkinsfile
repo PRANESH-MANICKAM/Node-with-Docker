@@ -41,31 +41,13 @@ pipeline {
                 script {
                     sshagent(credentials: ["${SSH_KEY_ID}"]) {
                         sh """
-                    ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} << 'EOF'
-                        set -e
-
-                        # Install AWS CLI v2 if not already installed
-                        if ! command -v aws &> /dev/null; then
-                            echo "Installing AWS CLI..."
-                            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-                            unzip awscliv2.zip
-                            sudo ./aws/install
-                            rm -rf awscliv2.zip aws
-                        fi
-
-                        # Pull Docker image
-                        docker pull ${DOCKERHUB_USERNAME}/${IMAGE_NAME}:${IMAGE_TAG}
-
-                        # Stop and remove old container if running
-                        docker stop ${IMAGE_NAME} || true
-                        docker rm ${IMAGE_NAME} || true
-
-                        # Download .env from S3
-                        aws s3 cp s3://pranesh-noder-server-s3/.env .env
-
-                        # Start container with env file
-                        docker run -d --name ${IMAGE_NAME} --env-file .env -p 9000:9000 ${DOCKERHUB_USERNAME}/${IMAGE_NAME}:${IMAGE_TAG}
-                    EOF
+                    ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} '
+                        aws s3 cp s3://pranesh-noder-server-s3/.env .env &&
+                        docker pull ${DOCKERHUB_USERNAME}/${IMAGE_NAME}:${IMAGE_TAG} &&
+                        docker stop ${IMAGE_NAME} || true &&
+                        docker rm ${IMAGE_NAME} || true &&
+                        docker run -d --env-file .env --name ${IMAGE_NAME} -p 9000:9000 ${DOCKERHUB_USERNAME}/${IMAGE_NAME}:${IMAGE_TAG}
+                    '
                 """
                     }
                 }
