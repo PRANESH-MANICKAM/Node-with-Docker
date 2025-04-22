@@ -43,6 +43,7 @@ pipeline {
                         sh """
                             set -x
                             ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} '
+                            aws s3 cp s3://pranesh-noder-server-s3/.env .
                                 docker pull ${DOCKERHUB_USERNAME}/${IMAGE_NAME}:${IMAGE_TAG} &&
                                 docker stop ${IMAGE_NAME} || true &&
                                 docker rm ${IMAGE_NAME} || true &&
