@@ -41,14 +41,22 @@ pipeline {
                 script {
                     sshagent(credentials: ["${SSH_KEY_ID}"]) {
                         sh """
-                            set -x
-                            ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} '
-                            aws s3 cp s3://pranesh-noder-server-s3/.env .
-                                docker pull ${DOCKERHUB_USERNAME}/${IMAGE_NAME}:${IMAGE_TAG} &&
-                                docker stop ${IMAGE_NAME} || true &&
-                                docker rm ${IMAGE_NAME} || true &&
-                                docker run -d --name ${IMAGE_NAME} -p 9000:9000 ${DOCKERHUB_USERNAME}/${IMAGE_NAME}:${IMAGE_TAG}
-                            '
+                            ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} << 'EOF'
+                                set -e
+                                
+                                # Pull the latest Docker image
+                                docker pull ${DOCKERHUB_USERNAME}/${IMAGE_NAME}:${IMAGE_TAG}
+                                
+                                # Stop and remove existing container if it exists
+                                docker stop ${IMAGE_NAME} || true
+                                docker rm ${IMAGE_NAME} || true
+                                
+                                # Download the .env file from S3
+                                aws s3 cp s3://pranesh-noder-server-s3/.env .env
+                                
+                                # Run the container with env file
+                                docker run -d --name ${IMAGE_NAME} --env-file .env -p 9000:9000 ${DOCKERHUB_USERNAME}/${IMAGE_NAME}:${IMAGE_TAG}
+                            EOF
                         """
                     }
                 }
