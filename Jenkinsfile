@@ -7,7 +7,7 @@ pipeline {
         IMAGE_TAG = 'latest'
         SSH_KEY_ID = 'aws-node-server-key'
         EC2_USER = 'ubuntu'
-        EC2_HOST = 'ec2-18-206-255-45.compute-1.amazonaws.com'
+        EC2_HOST = 'ec2-44-201-109-172.compute-1.amazonaws.com'
     }
 
     stages {
